@@ -1,4 +1,6 @@
 node_modules/
+.venv*/
+models/kokoro/
 output/
 episodes/*/work/
 episodes/*/assets/generated/
@@ -7,4 +9,5 @@ episodes/*/release/
 *.wav
 *.mp4
 *.png
+!episodes/*/assets/cinematic-v2/*.png
 .DS_Store

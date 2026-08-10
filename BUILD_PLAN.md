@@ -10,6 +10,16 @@ Build a local, zero-incremental-cost system that turns one approved curiosity qu
 
 The first milestone is a complete pilot: **“Why Don’t Birds Get Electrocuted on Power Lines?”** Publishing automation comes only after the production pipeline is reliable.
 
+## Quality reset — 2026-08-10
+
+The first technical MVP passed codec and file checks but failed the actual quality bar. Its 12 fps SVG motion and macOS system narration are retired and blocked from the normal render path. The replacement baseline is:
+
+- 14–18 original cinematic images for a 45–60 second Short;
+- a visual change every 2–4 seconds with restrained 30 fps Ken Burns movement;
+- three-word burned-in caption groups;
+- on-device Kokoro narration, followed by compression and loudness normalization;
+- an aesthetic approval gate in addition to technical QA.
+
 ## Constraints
 
 - No paid APIs, stock libraries, voice services, render farms, or schedulers.
@@ -17,7 +27,7 @@ The first milestone is a complete pilot: **“Why Don’t Birds Get Electrocuted
 - Use local software for narration, animation, captions, QA, and encoding.
 - Do not store Facebook, Google, or OpenAI credentials in the repository.
 - Do not publish content unless research, rights, render, and policy checks pass.
-- Prefer original diagrams and motion graphics over third-party footage.
+- Prefer original cinematic images and topic-specific visual storytelling over generic diagrams or third-party footage.
 - Stop cleanly when subscription limits are reached; never fall back to usage-based billing.
 
 ## Confirmed Local Environment
@@ -25,10 +35,10 @@ The first milestone is a complete pilot: **“Why Don’t Birds Get Electrocuted
 - macOS 26 on Apple Silicon (`arm64`)
 - Node.js 22.23.2 and npm 10.9.8
 - FFmpeg and ffprobe 8.0
-- Python 3.14.6
-- macOS `say` voices for the initial narration prototype
+- Python 3.12 for the local Kokoro ONNX runtime
+- Kokoro v1.0 INT8 model and voice embeddings stored locally and ignored by Git
 
-These are sufficient to build the pilot without installing a paid product. A higher-quality local Kokoro voice can be added after the renderer works.
+These are sufficient to build the pilot without installing a paid product or sending narration text to a cloud TTS service.
 
 ## Architecture
 
@@ -68,7 +78,7 @@ Interface:
 generateNarration(episode: Episode): Promise<NarrationResult>
 ```
 
-Initial adapter: macOS `say`. Later adapter: local Kokoro. Both return an audio path, sentence timings, duration, and pronunciation warnings.
+Production adapter: local Kokoro. The macOS `say` adapter is retained only for historical tests and is blocked from normal rendering.
 
 #### 3. Visual module
 
@@ -78,7 +88,7 @@ Interface:
 prepareVisuals(episode: Episode): Promise<VisualResult>
 ```
 
-Initial adapter: SVG/CSS diagrams generated from scene descriptions. Optional adapter: ChatGPT-generated still images saved manually or by Codex into the episode assets folder.
+Production adapter: ChatGPT/Codex-generated cinematic stills saved into the episode assets folder, then animated with restrained Ken Burns movement. SVG primitives are test fixtures, not release visuals.
 
 #### 4. Renderer
 
@@ -294,11 +304,11 @@ Acceptance:
 - retries cannot create duplicates;
 - authentication failure stops the queue and requests reauthorization.
 
-### Phase 7 — Recurring production
+### Phase 7 — Manual batch production
 
-Goal: run one weekly batch from a scheduled ChatGPT/Codex task.
+Goal: run one reviewed weekly batch manually from ChatGPT/Codex.
 
-The scheduled task should:
+The manual batch should:
 
 1. select one eligible topic;
 2. research and compile the episode;
@@ -307,7 +317,7 @@ The scheduled task should:
 5. place passing releases in the staging folder;
 6. report failures without publishing questionable content.
 
-The computer and desktop app must remain running for project-scoped scheduled work. The task should be tested manually several times before being scheduled.
+No cron, recurring automation, or unattended task is added to this project. Native platform scheduling may be used only after the finished video is reviewed and uploaded as a draft.
 
 ## Pilot Storyboard
 
@@ -385,6 +395,6 @@ The exact voltage number should be omitted unless the selected source and line t
 
 ## Definition of MVP Done
 
-The MVP is complete when one command produces an upload-ready vertical MP4, thumbnail, captions, metadata, and passing QA report from a validated E0001 manifest, using no paid API or copyrighted third-party media.
+The quality MVP is complete when one command produces an upload-ready cinematic vertical MP4, thumbnail, captions, metadata, and passing technical plus aesthetic QA from a validated manifest, using no paid API or copyrighted third-party media.
 
 Publishing automation, long-form video, analytics feedback, and higher-quality local TTS are deliberately outside the MVP. They are subsequent modules, not prerequisites for proving the content factory.

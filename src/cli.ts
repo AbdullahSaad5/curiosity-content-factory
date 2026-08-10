@@ -3,11 +3,10 @@ import { dirname, join, resolve } from "node:path";
 
 import { compileEpisode } from "./episode/compile";
 import type { Episode } from "./episode/schema";
-import { generateNarration, type NarrationResult } from "./narration/generate";
-import { MacOsSayAdapter } from "./narration/macos-say";
+import type { NarrationResult } from "./narration/generate";
 import { verifyRelease, type QaReport } from "./qa/verify-release";
 import { packageRelease } from "./release/package-release";
-import { renderEpisode, type RenderResult } from "./render/render-episode";
+import type { RenderResult } from "./render/render-episode";
 
 type Command = "new" | "validate" | "render" | "qa" | "release";
 
@@ -116,25 +115,10 @@ async function createRender(
   episode: Episode,
   outputDir: string,
 ): Promise<RenderReceipt> {
-  const narration = await generateNarration(episode, {
-    adapter: new MacOsSayAdapter({ voice: "Samantha", rate: 185 }),
-    outputPath: join(outputDir, "narration.wav"),
-    gapMs: 180,
-  });
-  const render = await renderEpisode(episode, narration, {
-    outputDir,
-    width: 1080,
-    height: 1920,
-    fps: 12,
-  });
-  const receipt: RenderReceipt = {
-    episodeId: episode.id,
-    createdAt: new Date().toISOString(),
-    narration,
-    render,
-  };
-  await writeJson(join(outputDir, "render.json"), receipt);
-  return receipt;
+  throw new Error(
+    `${episode.id} legacy render is disabled after its visual and narration quality review. ` +
+      `Use the cinematic prototype workflow instead; no files were written to ${outputDir}.`,
+  );
 }
 
 async function readReceipt(outputDir: string): Promise<RenderReceipt> {

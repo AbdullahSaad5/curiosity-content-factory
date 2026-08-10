@@ -15,7 +15,8 @@
     "episode:validate": "node --import tsx src/cli.ts validate",
     "episode:render": "node --import tsx src/cli.ts render",
     "episode:qa": "node --import tsx src/cli.ts qa",
-    "episode:release": "node --import tsx src/cli.ts release"
+    "episode:release": "node --import tsx src/cli.ts release",
+    "prototype:render": "node --import tsx src/cinematic/render-prototype.ts"
   },
   "dependencies": {
     "sharp": "0.35.3",

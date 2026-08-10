@@ -1,0 +1,24 @@
+{
+  "id": "airplane-window-v2",
+  "title": "Why Airplane Windows Are Rounded",
+  "voice": "bm_george",
+  "speed": 0.94,
+  "scenes": [
+    {
+      "image": "../../episodes/E0002-rounded-airplane-windows/assets/cinematic-v2/01-window-hook.png",
+      "narration": "Airplane windows were not always rounded."
+    },
+    {
+      "image": "../../episodes/E0002-rounded-airplane-windows/assets/cinematic-v2/02-square-stress.png",
+      "narration": "Early square corners forced cabin pressure to turn sharply, concentrating stress in tiny areas."
+    },
+    {
+      "image": "../../episodes/E0002-rounded-airplane-windows/assets/cinematic-v2/03-fatigue-crack.png",
+      "narration": "Repeated flights could grow fatigue cracks from those corners."
+    },
+    {
+      "image": "../../episodes/E0002-rounded-airplane-windows/assets/cinematic-v2/04-rounded-flow.png",
+      "narration": "Curves give that load a smoother path, which is why modern windows look like this."
+    }
+  ]
+}
