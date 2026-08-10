@@ -15,6 +15,7 @@ fi
 "$venv_dir/bin/python" -m pip install \
   kokoro-onnx==0.5.0 \
   openai-whisper==20250625 \
+  certifi==2026.7.22 \
   soundfile==0.13.1
 
 mkdir -p "$model_dir"

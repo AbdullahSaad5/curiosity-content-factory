@@ -13,7 +13,14 @@ async function stagedRelease(): Promise<string> {
   await writeFile(join(directory, "prototype.mp4"), "video", "utf8");
   await writeFile(
     join(directory, "quality-gate.json"),
-    JSON.stringify({ prototypeId: "E-test", approved: false }),
+    JSON.stringify({
+      prototypeId: "E-test",
+      technicalPassed: true,
+      researchPassed: true,
+      rightsPassed: true,
+      publishable: true,
+      approved: false,
+    }),
     "utf8",
   );
   await writeFile(
@@ -39,6 +46,44 @@ describe("release approval", () => {
     expect(release.gate.approvedBy).toBe("channel-owner");
     expect(JSON.parse(await readFile(join(directory, "quality-gate.json"), "utf8")))
       .toMatchObject({ approved: true, approvedBy: "channel-owner" });
+  });
+
+  it("invalidates approval if the reviewed video changes", async () => {
+    const directory = await stagedRelease();
+    await approveRelease(directory, "channel-owner");
+    await writeFile(join(directory, "prototype.mp4"), "different video", "utf8");
+
+    await expect(requireApprovedRelease(directory)).rejects.toThrow(/changed/i);
+  });
+
+  it("invalidates approval if the reviewed metadata changes", async () => {
+    const directory = await stagedRelease();
+    await approveRelease(directory, "channel-owner");
+    await writeFile(
+      join(directory, "publish-metadata.json"),
+      JSON.stringify({ title: "Changed title", description: "Changed", tags: [] }),
+      "utf8",
+    );
+
+    await expect(requireApprovedRelease(directory)).rejects.toThrow(/changed/i);
+  });
+
+  it("refuses approval when production quality gates have not passed", async () => {
+    const directory = await stagedRelease();
+    await writeFile(
+      join(directory, "quality-gate.json"),
+      JSON.stringify({
+        prototypeId: "E-test",
+        technicalPassed: true,
+        researchPassed: true,
+        rightsPassed: true,
+        publishable: false,
+        approved: false,
+      }),
+      "utf8",
+    );
+
+    await expect(approveRelease(directory, "channel-owner")).rejects.toThrow(/publishable/i);
   });
 });
 
@@ -106,5 +151,25 @@ describe("manual draft upload adapters", () => {
     expect(result).toEqual({ id: "fb-123", state: "DRAFT" });
     const finishUrl = String(fetcher.mock.calls[2]![0]);
     expect(finishUrl).toContain("video_state=DRAFT");
+  });
+
+  it("does not claim a Facebook draft when finalization reports false", async () => {
+    const directory = await stagedRelease();
+    await approveRelease(directory, "channel-owner");
+    const fetcher = vi.fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        video_id: "fb-123",
+        upload_url: "https://upload.example/facebook",
+      }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ success: true }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ success: false }), { status: 200 }));
+
+    await expect(uploadFacebookDraft({
+      releaseDirectory: directory,
+      pageId: "page-1",
+      pageAccessToken: "token",
+      confirmUpload: true,
+      fetcher,
+    })).rejects.toThrow(/finalization/i);
   });
 });

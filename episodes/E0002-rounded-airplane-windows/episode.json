@@ -173,24 +173,24 @@
   "rights": [
     {
       "category": "visuals",
-      "asset": "Animated diagrams and thumbnail",
-      "origin": "Generated locally by src/visuals/render-frame.ts",
-      "license": "Original project output",
-      "evidence": "Repository source and episode manifest"
+      "asset": "Cinematic scene images and thumbnail",
+      "origin": "Generated specifically for this episode with OpenAI image generation",
+      "license": "Original channel-controlled output subject to OpenAI terms",
+      "evidence": "assets/cinematic-v2 files and per-scene manifest rights records"
     },
     {
       "category": "narration",
       "asset": "Narration",
-      "origin": "macOS built-in Samantha system voice via /usr/bin/say",
-      "license": "Generated locally on the operator's Mac",
-      "evidence": "src/narration/macos-say.ts and render receipt"
+      "origin": "Generated locally with the Kokoro bm_george stock model voice",
+      "license": "Kokoro model Apache-2.0; runtime MIT",
+      "evidence": "docs/THIRD_PARTY_MODELS.md and quality-gate narration fields"
     },
     {
       "category": "typography",
       "asset": "Typography",
       "origin": "Arial system font",
       "license": "System-provided font rendered into video frames",
-      "evidence": "src/visuals/render-frame.ts"
+      "evidence": "ASS Caption style in src/cinematic/render-prototype.ts"
     }
   ]
 }

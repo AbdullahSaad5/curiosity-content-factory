@@ -1,6 +1,7 @@
 {
   "id": "airplane-window-v2",
   "title": "Why Airplane Windows Are Rounded",
+  "episode": "../../episodes/E0002-rounded-airplane-windows/episode.json",
   "description": "Square airplane windows once concentrated pressure stress at their corners. Here is why curves changed that.",
   "tags": ["aviation", "engineering", "curiosity", "science shorts"],
   "voice": "bm_george",
@@ -8,19 +9,43 @@
   "scenes": [
     {
       "image": "../../episodes/E0002-rounded-airplane-windows/assets/cinematic-v2/01-window-hook.png",
-      "narration": "Airplane windows were not always rounded."
+      "narration": "Airplane windows were not always rounded.",
+      "claimIds": ["C4"],
+      "rights": {
+        "origin": "Generated specifically for this episode with OpenAI image generation",
+        "license": "Original channel-controlled output subject to OpenAI terms",
+        "evidence": "Repository asset path and generation conversation"
+      }
     },
     {
       "image": "../../episodes/E0002-rounded-airplane-windows/assets/cinematic-v2/02-square-stress.png",
-      "narration": "Early square corners forced cabin pressure to turn sharply, concentrating stress in tiny areas."
+      "narration": "Early square corners forced cabin pressure to turn sharply, concentrating stress in tiny areas.",
+      "claimIds": ["C1", "C2"],
+      "rights": {
+        "origin": "Generated specifically for this episode with OpenAI image generation",
+        "license": "Original channel-controlled output subject to OpenAI terms",
+        "evidence": "Repository asset path and generation conversation"
+      }
     },
     {
       "image": "../../episodes/E0002-rounded-airplane-windows/assets/cinematic-v2/03-fatigue-crack.png",
-      "narration": "Repeated flights could grow fatigue cracks from those corners."
+      "narration": "Repeated flights could grow fatigue cracks from those corners.",
+      "claimIds": ["C4"],
+      "rights": {
+        "origin": "Generated specifically for this episode with OpenAI image generation",
+        "license": "Original channel-controlled output subject to OpenAI terms",
+        "evidence": "Repository asset path and generation conversation"
+      }
     },
     {
       "image": "../../episodes/E0002-rounded-airplane-windows/assets/cinematic-v2/04-rounded-flow.png",
-      "narration": "Curves give that load a smoother path, which is why modern windows look like this."
+      "narration": "Curves give that load a smoother path, which is why modern windows look like this.",
+      "claimIds": ["C3"],
+      "rights": {
+        "origin": "Generated specifically for this episode with OpenAI image generation",
+        "license": "Original channel-controlled output subject to OpenAI terms",
+        "evidence": "Repository asset path and generation conversation"
+      }
     }
   ]
 }

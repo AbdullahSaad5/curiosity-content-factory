@@ -22,7 +22,7 @@ This project combines the strongest parts of the original Curiosity Content Fact
 
 1. Build a manifest and original visual assets.
 2. Run `npm run pipeline -- <manifest>`.
-3. Watch the MP4 and inspect its contact sheet and quality gate.
+3. Confirm the technical/research/rights gates say `publishable: true`, then watch the MP4 and inspect its contact sheet.
 4. Run `npm run release:approve -- <output-dir> <reviewer>`.
 5. Optionally run one of the manual draft upload commands with `--confirm-upload`.
 6. Complete platform processing checks and public scheduling manually in the platform UI.

@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   alignScenesToWords,
   captionCuesFromWords,
+  transcriptCoverage,
 } from "../src/cinematic/timing";
 
 describe("alignScenesToWords", () => {
@@ -35,6 +36,25 @@ describe("alignScenesToWords", () => {
       { startSeconds: 2.35, endSeconds: 5 },
     ]);
   });
+
+  it("fails instead of guessing when a scene anchor is absent", () => {
+    expect(() =>
+      alignScenesToWords(
+        [
+          { narration: "First scene words." },
+          { narration: "Completely absent anchor." },
+        ],
+        [
+          { word: "First", startSeconds: 0, endSeconds: 0.2 },
+          { word: "scene", startSeconds: 0.2, endSeconds: 0.4 },
+          { word: "words", startSeconds: 0.4, endSeconds: 0.6 },
+          { word: "Different", startSeconds: 0.8, endSeconds: 1.1 },
+          { word: "speech", startSeconds: 1.1, endSeconds: 1.4 },
+        ],
+        1.5,
+      ),
+    ).toThrow(/anchor/i);
+  });
 });
 
 describe("captionCuesFromWords", () => {
@@ -60,5 +80,31 @@ describe("captionCuesFromWords", () => {
       },
       { text: "THERE", startSeconds: 3.36, endSeconds: 3.65 },
     ]);
+  });
+});
+
+describe("transcriptCoverage", () => {
+  it("detects when anchors exist but later narration words are missing", () => {
+    expect(transcriptCoverage(
+      "Anchor words continue with important missing narration",
+      [
+        { word: "Anchor", startSeconds: 0, endSeconds: 0.2 },
+        { word: "words", startSeconds: 0.2, endSeconds: 0.4 },
+        { word: "continue", startSeconds: 0.4, endSeconds: 0.6 },
+      ],
+    )).toBeCloseTo(3 / 7);
+  });
+
+  it("penalizes hallucinated words as well as missing words", () => {
+    expect(transcriptCoverage(
+      "One accurate sentence",
+      [
+        { word: "One", startSeconds: 0, endSeconds: 0.1 },
+        { word: "invented", startSeconds: 0.1, endSeconds: 0.2 },
+        { word: "extra", startSeconds: 0.2, endSeconds: 0.3 },
+        { word: "accurate", startSeconds: 0.3, endSeconds: 0.4 },
+        { word: "sentence", startSeconds: 0.4, endSeconds: 0.5 },
+      ],
+    )).toBeCloseTo(3 / 5);
   });
 });

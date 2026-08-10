@@ -45,7 +45,7 @@ export async function uploadFacebookDraft(
 
   const size = (await stat(release.videoPath)).size;
   const video = new Uint8Array(await readFile(release.videoPath));
-  await jsonOrThrow<{ success: boolean }>(
+  const binaryResult = await jsonOrThrow<{ success: boolean }>(
     await fetcher(started.upload_url, {
       method: "POST",
       headers: {
@@ -58,6 +58,9 @@ export async function uploadFacebookDraft(
     }),
     "binary upload",
   );
+  if (binaryResult.success !== true) {
+    throw new Error("Facebook binary upload reported success=false");
+  }
 
   const finish = new URL(endpoint);
   finish.searchParams.set("upload_phase", "finish");
@@ -65,9 +68,12 @@ export async function uploadFacebookDraft(
   finish.searchParams.set("video_state", "DRAFT");
   finish.searchParams.set("title", release.metadata.title);
   finish.searchParams.set("description", release.metadata.description);
-  await jsonOrThrow<{ success: boolean }>(
+  const finalResult = await jsonOrThrow<{ success: boolean }>(
     await fetcher(finish, { method: "POST", headers: authorization }),
     "draft finalization",
   );
+  if (finalResult.success !== true) {
+    throw new Error("Facebook draft finalization reported success=false");
+  }
   return { id: started.video_id, state: "DRAFT" };
 }

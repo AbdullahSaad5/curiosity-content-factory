@@ -22,14 +22,14 @@ The factory stops at a staged release because only the account owner can complet
 The renderer never uploads. After watching the entire video and inspecting the contact sheet, record a named approval:
 
 ```bash
-npm run release:approve -- output/prototypes/airplane-window-v2 "Your Name"
+npm run release:approve -- output/prototypes/your-production-id "Your Name"
 ```
 
 For YouTube, export an OAuth access token authorized for `youtube.upload`, then run:
 
 ```bash
 export YOUTUBE_ACCESS_TOKEN="..."
-npm run publish:youtube-draft -- output/prototypes/airplane-window-v2 --confirm-upload
+npm run publish:youtube-draft -- output/prototypes/your-production-id --confirm-upload
 ```
 
 For a Facebook Page, export its ID and Page access token, then run:
@@ -37,10 +37,10 @@ For a Facebook Page, export its ID and Page access token, then run:
 ```bash
 export FB_PAGE_ID="..."
 export FB_PAGE_ACCESS_TOKEN="..."
-npm run publish:facebook-draft -- output/prototypes/airplane-window-v2 --confirm-upload
+npm run publish:facebook-draft -- output/prototypes/your-production-id --confirm-upload
 ```
 
-You may set `FB_GRAPH_VERSION` when Meta advances the app's supported Graph version. The default is `v25.0`. Both adapters require the approval file and literal `--confirm-upload`. YouTube is forced to `private`; Facebook is forced to `DRAFT`. The code has no public/published mode and creates no cron job. Access tokens must never be committed.
+You may set `FB_GRAPH_VERSION` when Meta advances the app's supported Graph version. The default is `v25.0`. Both adapters require a production quality gate, named approval bound to SHA-256 hashes of the exact video and metadata, and literal `--confirm-upload`. Changing either reviewed artifact invalidates approval. YouTube is forced to `private`; Facebook is forced to `DRAFT`. The code has no public/published mode and creates no cron job. Access tokens must never be committed.
 
 ## Release procedure
 

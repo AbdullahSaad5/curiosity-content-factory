@@ -65,12 +65,12 @@ The command writes this package under `output/prototypes/airplane-window-v2/`:
 
 Kokoro, Whisper, and generated media are local and ignored by Git. The one-time setup downloads Kokoro; the first render downloads the selected Whisper model. Neither runtime transmits episode text or narration. See [the model record](docs/THIRD_PARTY_MODELS.md). The approval prototype is not uploaded anywhere.
 
-After watching a render, a named human can approve it and explicitly upload it as private/draft. These commands are deliberately separate from rendering:
+After a full 35–60-second production render passes technical, research, rights, script-length, and visual-density checks, a named human can approve it and explicitly upload it as private/draft. The included 19.9-second aesthetic prototype is intentionally marked `publishable: false`. These commands are deliberately separate from rendering:
 
 ```bash
-npm run release:approve -- output/prototypes/airplane-window-v2 "Your Name"
-npm run publish:youtube-draft -- output/prototypes/airplane-window-v2 --confirm-upload
-npm run publish:facebook-draft -- output/prototypes/airplane-window-v2 --confirm-upload
+npm run release:approve -- output/prototypes/your-production-id "Your Name"
+npm run publish:youtube-draft -- output/prototypes/your-production-id --confirm-upload
+npm run publish:facebook-draft -- output/prototypes/your-production-id --confirm-upload
 ```
 
 The upload commands require platform access-token environment variables. They never select public/published status; final publication stays in YouTube Studio or Meta Business Suite. See [the publishing runbook](docs/PUBLISHING_RUNBOOK.md).

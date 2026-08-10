@@ -44,6 +44,17 @@ describe("masterSoundtrack", () => {
     };
     expect(metadata.streams[0]).toEqual({ sample_rate: "48000", channels: 2 });
     expect(Number(metadata.format.duration)).toBeGreaterThanOrEqual(2.15);
+
+    const measured = await run("ffmpeg", [
+      "-hide_banner", "-nostats", "-i", outputPath,
+      "-af", "loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json",
+      "-f", "null", "-",
+    ]);
+    const loudness = Number(measured.stderr.match(/"input_i"\s*:\s*"(-?[\d.]+)"/u)?.[1]);
+    const truePeak = Number(measured.stderr.match(/"input_tp"\s*:\s*"(-?[\d.]+)"/u)?.[1]);
+    expect(loudness).toBeGreaterThan(-16);
+    expect(loudness).toBeLessThan(-12);
+    expect(truePeak).toBeLessThanOrEqual(-1);
   });
 
   it("refuses an unlicensed music input", async () => {

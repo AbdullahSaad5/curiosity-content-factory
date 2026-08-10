@@ -39,7 +39,7 @@ export async function masterSoundtrack(options: SoundtrackOptions): Promise<void
   const filter = [
     `[0:a]${VOICE_MASTER}[voice]`,
     `[1:a]atrim=duration=${options.durationSeconds},asetpts=PTS-STARTPTS,volume=${volume},afade=t=in:st=0:d=${fadeIn},afade=t=out:st=${fadeOutStart}:d=${fadeOut},aformat=sample_rates=48000:channel_layouts=stereo[music]`,
-    "[voice][music]amix=inputs=2:duration=first:dropout_transition=0:normalize=0,aformat=sample_rates=48000:channel_layouts=stereo[out]",
+    "[voice][music]amix=inputs=2:duration=first:dropout_transition=0:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11,aformat=sample_rates=48000:channel_layouts=stereo[out]",
   ].join(";");
 
   await run("ffmpeg", [

@@ -1,25 +1,41 @@
+import { createHash } from "node:crypto";
 import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 
 import sharp from "sharp";
 import { z } from "zod";
 
+import { compileEpisode } from "../episode/compile";
 import { run } from "../lib/process";
 import { masterSoundtrack } from "./audio";
+import { validateCinematicEvidence } from "./provenance";
+import {
+  evaluateCinematicTechnical,
+  evaluatePublication,
+  probeCinematicOutput,
+} from "./quality";
 import {
   alignScenesToWords,
   captionCuesFromWords,
+  transcriptCoverage,
   type TimedWord,
 } from "./timing";
 
 const sceneSchema = z.object({
   image: z.string().min(1),
   narration: z.string().min(1),
+  claimIds: z.array(z.string().min(1)).min(1),
+  rights: z.object({
+    origin: z.string().min(1),
+    license: z.string().min(1),
+    evidence: z.string().min(1),
+  }),
 });
 
 const manifestSchema = z.object({
   id: z.string().min(1),
   title: z.string().min(1),
+  episode: z.string().min(1),
   description: z.string().min(1).default("An original visual explainer."),
   tags: z.array(z.string().min(1)).max(30).default([]),
   voice: z.string().min(1),
@@ -188,6 +204,11 @@ export async function renderCinematicPrototype(
     JSON.parse(await readFile(absoluteManifest, "utf8")) as unknown,
   );
   const projectRoot = resolve(dirname(absoluteManifest), "../..");
+  const episodePath = resolve(dirname(absoluteManifest), manifest.episode);
+  const episode = compileEpisode(
+    JSON.parse(await readFile(episodePath, "utf8")) as unknown,
+  );
+  const evidence = validateCinematicEvidence(episode, manifest.scenes);
   const outputDir = resolve(
     outputDirectory ?? join(projectRoot, "output", "prototypes", manifest.id),
   );
@@ -201,6 +222,11 @@ export async function renderCinematicPrototype(
     ? resolve(dirname(absoluteManifest), manifest.music.file)
     : undefined;
   await Promise.all([...images, ...(musicPath ? [musicPath] : [])].map((path) => access(path)));
+  const imageHashes = await Promise.all(
+    images.map(async (path) =>
+      createHash("sha256").update(await readFile(path)).digest("hex"),
+    ),
+  );
 
   const python = join(projectRoot, ".venv-local-tts", "bin", "python");
   const ttsScript = join(projectRoot, "scripts", "kokoro_tts.py");
@@ -383,6 +409,25 @@ export async function renderCinematicPrototype(
     contactSheetPath,
   ]);
 
+  const technical = evaluateCinematicTechnical(
+    await probeCinematicOutput(videoPath),
+    Math.round(timeline.durationSeconds * 1_000),
+    cues.length,
+    transcriptCoverage(
+      manifest.scenes.map((scene) => scene.narration).join(" "),
+      timedWords,
+    ),
+  );
+  const publication = evaluatePublication({
+    durationSeconds: timeline.durationSeconds,
+    imageHashes,
+    sceneDurations: sceneTimings.map(
+      (timing) => timing.endSeconds - timing.startSeconds,
+    ),
+    narration: manifest.scenes.map((scene) => scene.narration).join(" "),
+  });
+  const publishable = technical.passed && publication.passed;
+
   await writeFile(
     join(outputDir, "publish-metadata.json"),
     `${JSON.stringify({
@@ -398,6 +443,7 @@ export async function renderCinematicPrototype(
     `${JSON.stringify(
       {
         prototypeId: manifest.id,
+        episodeId: episode.id,
         renderer: "cinematic-image-v2",
         narrationProvider: timeline.provider,
         narrationVoice: timeline.voice,
@@ -416,6 +462,15 @@ export async function renderCinematicPrototype(
               rights: manifest.music.license,
             }
           : { included: false },
+        technicalPassed: technical.passed,
+        technicalChecks: technical.checks,
+        researchPassed: evidence.sourceCount >= 2 && evidence.claimCount > 0,
+        sourceCount: evidence.sourceCount,
+        mappedClaimCount: evidence.claimCount,
+        rightsPassed: evidence.visualRightsCount === images.length,
+        visualRightsCount: evidence.visualRightsCount,
+        publicationChecks: publication.checks,
+        publishable,
         legacySystemVoiceBlocked: true,
         aestheticApprovalRequired: true,
         approved: false,

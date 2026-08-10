@@ -33,6 +33,7 @@ npm run pipeline -- prototypes/airplane-window-v2/manifest.json output/my-test
 8. Produces a thumbnail, scene-aware contact sheet, and quality gate.
 
 The command does not upload, publish, schedule, or create a cron job.
+The quality gate probes the finished file for dimensions, duration, codecs, frame rate, audio layout/levels, black frames, and at least 90% transcript/caption coverage. Draft upload remains blocked unless the manifest also links a validated episode source ledger, every scene maps to claims and visual-rights evidence, every image is unique by content hash, scenes stay within 2–4 seconds, readability is grade 10.5 or below, and the production cut meets the 35–60-second, 100–145-word, and 14–18-image targets.
 
 ## Output
 
@@ -55,9 +56,9 @@ output/prototypes/airplane-window-v2/
 ## Create another approval cut
 
 1. Copy `prototypes/airplane-window-v2/manifest.json` to a new prototype directory.
-2. Give it a new `id` and `title`.
+2. Give it a new `id`, `title`, and `episode` path to a validated episode manifest.
 3. Generate original 9:16 scene images and save them under the matching episode's `assets/cinematic-v2/` directory.
-4. Add one manifest scene per image with the exact narration for that beat.
+4. Add one manifest scene per image with the exact narration, applicable `claimIds`, and that image's `rights` record.
 5. Run `npm run pipeline -- <path-to-manifest>`.
 6. Watch the entire MP4 with sound and inspect the contact sheet before approving a full episode.
 

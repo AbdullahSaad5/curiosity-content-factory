@@ -50,8 +50,8 @@ export function alignScenesToWords(
 
     const target = tokens(scene.narration);
     const anchor = target.slice(0, Math.min(3, target.length));
-    let match = cursor;
-    const from = Math.max(0, cursor - 6);
+    let match: number | undefined;
+    const from = cursor;
     const to = Math.min(transcript.length - anchor.length, cursor + 12);
     for (let candidate = from; candidate <= to; candidate += 1) {
       if (anchor.every((token, offset) => transcript[candidate + offset]?.token === token)) {
@@ -59,15 +59,29 @@ export function alignScenesToWords(
         break;
       }
     }
+    if (match === undefined) {
+      throw new Error(`Whisper scene anchor was not found: ${anchor.join(" ")}`);
+    }
     cursor = Math.min(transcript.length, match + target.length);
     const wordIndex = transcript[match]?.wordIndex;
     return wordIndex === undefined ? words.at(-1)!.endSeconds : words[wordIndex]!.startSeconds;
   });
 
-  return starts.map((startSeconds, index) => ({
+  const timings = starts.map((startSeconds, index) => ({
     startSeconds,
     endSeconds: starts[index + 1] ?? totalDurationSeconds,
   }));
+  if (
+    timings.some(
+      (timing) =>
+        timing.startSeconds < 0 ||
+        timing.endSeconds > totalDurationSeconds ||
+        timing.endSeconds <= timing.startSeconds,
+    )
+  ) {
+    throw new Error("Whisper scene anchors did not produce positive monotonic timings");
+  }
+  return timings;
 }
 
 export function captionCuesFromWords(
@@ -99,4 +113,24 @@ export function captionCuesFromWords(
     startSeconds: group[0]!.startSeconds,
     endSeconds: group.at(-1)!.endSeconds,
   }));
+}
+
+export function transcriptCoverage(script: string, words: TimedWord[]): number {
+  const expected = tokens(script);
+  const actual = words.flatMap((word) => tokens(word.word));
+  if (expected.length === 0) return actual.length === 0 ? 1 : 0;
+
+  const previous = new Array<number>(actual.length + 1).fill(0);
+  for (const expectedToken of expected) {
+    const current = new Array<number>(actual.length + 1).fill(0);
+    for (let index = 1; index <= actual.length; index += 1) {
+      current[index] = expectedToken === actual[index - 1]
+        ? (previous[index - 1] ?? 0) + 1
+        : Math.max(current[index - 1] ?? 0, previous[index] ?? 0);
+    }
+    for (let index = 0; index < current.length; index += 1) {
+      previous[index] = current[index] ?? 0;
+    }
+  }
+  return (previous.at(-1) ?? 0) / Math.max(expected.length, actual.length);
 }
