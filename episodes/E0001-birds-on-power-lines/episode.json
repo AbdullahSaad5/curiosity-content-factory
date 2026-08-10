@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "id": "E0001",
+  "slug": "birds-on-power-lines",
+  "question": "Why don't birds get electrocuted on power lines?",
+  "status": "researched",
+  "claims": [
+    {
+      "id": "C1",
+      "text": "Electrical current through a body requires a difference in electrical potential across it and a conducting path.",
+      "sourceIds": ["S1", "S2"]
+    },
+    {
+      "id": "C2",
+      "text": "A bird with both feet on one wire is at nearly the same electrical potential across its body, so very little current flows through it.",
+      "sourceIds": ["S1", "S2"]
+    },
+    {
+      "id": "C3",
+      "text": "Touching two energized parts at different potentials, or one energized part and a grounded part, can complete a dangerous circuit through a bird.",
+      "sourceIds": ["S1", "S2", "S3", "S4"]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Bird on a High-Voltage Transmission Line",
+      "url": "https://sciencedemonstrations.fas.harvard.edu/presentations/bird-high-voltage-transmission-line",
+      "publisher": "Harvard Natural Sciences Lecture Demonstrations",
+      "accessedAt": "2026-08-10"
+    },
+    {
+      "id": "S2",
+      "title": "How do birds sit on high-voltage power lines without getting electrocuted?",
+      "url": "https://engineering.mit.edu/ask-an-engineer/how-do-birds-sit-on-high-voltage-power-lines-without-getting-electrocuted",
+      "publisher": "MIT School of Engineering",
+      "accessedAt": "2026-08-10"
+    },
+    {
+      "id": "S3",
+      "title": "Electrocution",
+      "url": "https://www.usgs.gov/publications/electrocution",
+      "publisher": "U.S. Geological Survey",
+      "accessedAt": "2026-08-10"
+    },
+    {
+      "id": "S4",
+      "title": "Avoidance and Minimization Measures: Power Lines",
+      "url": "https://www.fws.gov/story/avoidance-and-minimization-measures-power-lines",
+      "publisher": "U.S. Fish & Wildlife Service",
+      "accessedAt": "2026-08-10"
+    }
+  ],
+  "script": {
+    "short": "This bird is sitting on a dangerously high-voltage wire. So why doesn't it get electrocuted? Birds are not immune to electricity. Electricity needs a route through the body, driven by a difference in electrical potential. With both feet on one wire, the bird's whole body is at almost the same potential. That leaves almost no voltage difference across it, so almost no current takes a shortcut through the bird. But touching a second wire at a different potential would bridge two electrical levels. Touching the live wire and a grounded pole creates the same danger: the body completes a path. That's the trick. One wire offers no useful route through the bird. Two connections can be deadly. Never approach or touch a power line yourself.",
+    "segments": [
+      {
+        "id": "SEG1",
+        "sceneId": "SC1",
+        "claimIds": ["C2"],
+        "text": "This bird is sitting on a dangerously high-voltage wire. So why doesn't it get electrocuted?"
+      },
+      {
+        "id": "SEG2",
+        "sceneId": "SC2",
+        "claimIds": ["C1", "C2"],
+        "text": "Birds are not immune to electricity. Electricity needs a route through the body, driven by a difference in electrical potential."
+      },
+      {
+        "id": "SEG3",
+        "sceneId": "SC3",
+        "claimIds": ["C2"],
+        "text": "With both feet on one wire, the bird's whole body is at almost the same potential."
+      },
+      {
+        "id": "SEG4",
+        "sceneId": "SC4",
+        "claimIds": ["C1", "C2"],
+        "text": "That leaves almost no voltage difference across it, so almost no current takes a shortcut through the bird."
+      },
+      {
+        "id": "SEG5",
+        "sceneId": "SC5",
+        "claimIds": ["C3"],
+        "text": "But touching a second wire at a different potential would bridge two electrical levels."
+      },
+      {
+        "id": "SEG6",
+        "sceneId": "SC6",
+        "claimIds": ["C3"],
+        "text": "Touching the live wire and a grounded pole creates the same danger: the body completes a path."
+      },
+      {
+        "id": "SEG7",
+        "sceneId": "SC7",
+        "claimIds": ["C1", "C3"],
+        "text": "That's the trick. One wire offers no useful route through the bird. Two connections can be deadly. Never approach or touch a power line yourself."
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "SC1",
+      "type": "title",
+      "headline": "Why is this bird safe?",
+      "body": "The wire is dangerous. The connection is what matters.",
+      "accent": "electric",
+      "visual": { "kind": "bird-on-wire", "mode": "safe" }
+    },
+    {
+      "id": "SC2",
+      "type": "reveal",
+      "headline": "Birds aren't immune",
+      "body": "Current needs both a path and a potential difference.",
+      "accent": "neutral",
+      "visual": { "kind": "potential-map", "mode": "principle" }
+    },
+    {
+      "id": "SC3",
+      "type": "diagram",
+      "headline": "Both feet: one wire",
+      "body": "Almost the same electrical potential on both sides.",
+      "accent": "safe",
+      "visual": { "kind": "bird-on-wire", "mode": "safe" }
+    },
+    {
+      "id": "SC4",
+      "type": "flow",
+      "headline": "Almost no difference",
+      "body": "No useful shortcut through the bird's body.",
+      "accent": "safe",
+      "visual": { "kind": "potential-map", "mode": "same" }
+    },
+    {
+      "id": "SC5",
+      "type": "comparison",
+      "headline": "A second wire changes it",
+      "body": "Different potentials create a route through the body.",
+      "accent": "danger",
+      "visual": { "kind": "potential-map", "mode": "different" }
+    },
+    {
+      "id": "SC6",
+      "type": "diagram",
+      "headline": "Wire + ground = danger",
+      "body": "The body can become part of the circuit.",
+      "accent": "danger",
+      "visual": { "kind": "bird-on-wire", "mode": "danger" }
+    },
+    {
+      "id": "SC7",
+      "type": "conclusion",
+      "headline": "One connection vs two",
+      "body": "Never approach or touch a power line.",
+      "accent": "electric",
+      "visual": { "kind": "path-comparison", "mode": "summary" }
+    }
+  ],
+  "disclosure": {
+    "realisticSyntheticMedia": false,
+    "reason": "Original stylized diagrams and synthetic narration; no realistic person, place, or event is depicted."
+  },
+  "publishing": {
+    "title": "Why Don't Birds Get Electrocuted on Power Lines?",
+    "summary": "A bird can sit on one high-voltage wire because both feet are at almost the same electrical potential. A second connection changes everything.",
+    "keywords": ["science", "electricity", "birds", "power lines", "explained", "curiosity"]
+  },
+  "rights": [
+    {
+      "category": "visuals",
+      "asset": "Animated diagrams and thumbnail",
+      "origin": "Generated locally by src/visuals/render-frame.ts",
+      "license": "Original project output",
+      "evidence": "Repository source and episode manifest"
+    },
+    {
+      "category": "narration",
+      "asset": "Narration",
+      "origin": "macOS built-in Samantha system voice via /usr/bin/say",
+      "license": "Generated locally on the operator's Mac",
+      "evidence": "src/narration/macos-say.ts and render receipt"
+    },
+    {
+      "category": "typography",
+      "asset": "Typography",
+      "origin": "Arial system font",
+      "license": "System-provided font rendered into video frames",
+      "evidence": "src/visuals/render-frame.ts"
+    }
+  ]
+}

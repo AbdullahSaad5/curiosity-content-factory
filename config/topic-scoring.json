@@ -1,0 +1,19 @@
+{
+  "scale": "Score each criterion from 1 (weak) to 5 (strong)",
+  "minimumTotal": 20,
+  "automaticRejects": [
+    "duplicate normalized question or slug",
+    "fewer than two credible sources",
+    "medical, legal, financial, political, breaking-news, tragedy, allegation, or child-directed topic",
+    "requires third-party footage to explain",
+    "cannot be answered responsibly in 35 to 60 seconds"
+  ],
+  "criteria": [
+    { "id": "broad_curiosity", "weight": 2, "question": "Would a general viewer understand and care about the question immediately?" },
+    { "id": "visual_explanation", "weight": 2, "question": "Can original diagrams make the answer clearer than narration alone?" },
+    { "id": "source_quality", "weight": 2, "question": "Are multiple primary or institutional sources available?" },
+    { "id": "hook_clarity", "weight": 1, "question": "Can the opening promise the exact answer without clickbait?" },
+    { "id": "evergreen_value", "weight": 1, "question": "Will the explanation remain useful for at least a year?" },
+    { "id": "topic_difference", "weight": 2, "question": "Is the subject and visual logic materially different from recent episodes?" }
+  ]
+}

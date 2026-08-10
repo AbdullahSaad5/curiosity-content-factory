@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "id": "E0002",
+  "slug": "rounded-airplane-windows",
+  "question": "Why are airplane windows rounded?",
+  "status": "researched",
+  "claims": [
+    {
+      "id": "C1",
+      "text": "A pressurized aircraft fuselage repeatedly carries loads caused by the pressure difference between the cabin and the outside air.",
+      "sourceIds": ["S1", "S4"]
+    },
+    {
+      "id": "C2",
+      "text": "An opening interrupts the stress field in a loaded structure, and sharp corners can create localized stress concentrations.",
+      "sourceIds": ["S1", "S2", "S3"]
+    },
+    {
+      "id": "C3",
+      "text": "Rounded window edges let structural stress flow more smoothly around an opening and reduce the severe concentrations found at sharp corners.",
+      "sourceIds": ["S1", "S2"]
+    },
+    {
+      "id": "C4",
+      "text": "Investigations of the de Havilland Comet found fatigue and high stress concentrations around squarish window and frame corners, influencing later design and fatigue-testing practice.",
+      "sourceIds": ["S1", "S2"]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "De Havilland DH-106 Comet 1",
+      "url": "https://www.faa.gov/lessons_learned/transport_airplane/accidents/G-ALYV",
+      "publisher": "Federal Aviation Administration",
+      "accessedAt": "2026-08-10"
+    },
+    {
+      "id": "S2",
+      "title": "Why are pressurized windows rounded on the corners?",
+      "url": "https://howthingsfly.si.edu/ask-an-explainer/why-are-pressurized-windows-rounded-corners",
+      "publisher": "Smithsonian National Air and Space Museum",
+      "accessedAt": "2026-08-10"
+    },
+    {
+      "id": "S3",
+      "title": "Boeing 707-300 — Effect of a Fastener Hole: Stress Concentration",
+      "url": "https://www.faa.gov/lessons_learned/transport_airplane/accidents/G-BEBP",
+      "publisher": "Federal Aviation Administration",
+      "accessedAt": "2026-08-10"
+    },
+    {
+      "id": "S4",
+      "title": "AC 25.775-1 — Windows and Windshields",
+      "url": "https://www.faa.gov/regulations_policies/advisory_circulars/index.cfm/go/document.information/documentID/22666/1000",
+      "publisher": "Federal Aviation Administration",
+      "accessedAt": "2026-08-10"
+    }
+  ],
+  "script": {
+    "short": "Why are airplane windows rounded instead of square? It is not about the view. It is about how a pressurized cabin carries stress. At altitude, cabin pressure is higher than outside, so the thin fuselage skin is constantly being pushed outward. Cut any window into that skin, and the load has to flow around the opening. A sharp corner forces that load to turn abruptly. Stress bunches into a tiny area instead of spreading smoothly. Repeat that pressure cycle flight after flight, and concentrated stress can help fatigue cracks grow. A rounded corner gives the load a smoother path around the opening, reducing severe stress concentrations. It does not remove stress; it distributes it better. Early de Havilland Comet investigations found high stress concentrations around squarish window frames. Modern rounded windows reflect that hard-earned engineering lesson.",
+    "segments": [
+      {
+        "id": "SEG1",
+        "sceneId": "SC1",
+        "claimIds": ["C1", "C2"],
+        "text": "Why are airplane windows rounded instead of square? It is not about the view. It is about how a pressurized cabin carries stress."
+      },
+      {
+        "id": "SEG2",
+        "sceneId": "SC2",
+        "claimIds": ["C1"],
+        "text": "At altitude, cabin pressure is higher than outside, so the thin fuselage skin is constantly being pushed outward."
+      },
+      {
+        "id": "SEG3",
+        "sceneId": "SC3",
+        "claimIds": ["C2"],
+        "text": "Cut any window into that skin, and the load has to flow around the opening."
+      },
+      {
+        "id": "SEG4",
+        "sceneId": "SC4",
+        "claimIds": ["C2"],
+        "text": "A sharp corner forces that load to turn abruptly. Stress bunches into a tiny area instead of spreading smoothly."
+      },
+      {
+        "id": "SEG5",
+        "sceneId": "SC5",
+        "claimIds": ["C4"],
+        "text": "Repeat that pressure cycle flight after flight, and concentrated stress can help fatigue cracks grow."
+      },
+      {
+        "id": "SEG6",
+        "sceneId": "SC6",
+        "claimIds": ["C3"],
+        "text": "A rounded corner gives the load a smoother path around the opening, reducing severe stress concentrations. It does not remove stress; it distributes it better."
+      },
+      {
+        "id": "SEG7",
+        "sceneId": "SC7",
+        "claimIds": ["C4"],
+        "text": "Early de Havilland Comet investigations found high stress concentrations around squarish window frames. Modern rounded windows reflect that hard-earned engineering lesson."
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "SC1",
+      "type": "title",
+      "headline": "Why are airplane windows round?",
+      "body": "The view is not the real reason.",
+      "accent": "electric",
+      "visual": { "kind": "shape-comparison" }
+    },
+    {
+      "id": "SC2",
+      "type": "flow",
+      "headline": "The cabin pushes outward",
+      "body": "Pressure inside is higher than the air outside at altitude.",
+      "accent": "electric",
+      "visual": { "kind": "abstract" }
+    },
+    {
+      "id": "SC3",
+      "type": "diagram",
+      "headline": "An opening redirects stress",
+      "body": "The structural load must flow around the window.",
+      "accent": "neutral",
+      "visual": { "kind": "stress-map", "mode": "rounded" }
+    },
+    {
+      "id": "SC4",
+      "type": "reveal",
+      "headline": "Sharp corners concentrate it",
+      "body": "A sudden turn bunches the load into a small area.",
+      "accent": "danger",
+      "visual": { "kind": "stress-map", "mode": "sharp" }
+    },
+    {
+      "id": "SC5",
+      "type": "flow",
+      "headline": "Flights repeat the load",
+      "body": "Concentrated cyclic stress can help fatigue cracks grow.",
+      "accent": "danger",
+      "visual": { "kind": "abstract" }
+    },
+    {
+      "id": "SC6",
+      "type": "diagram",
+      "headline": "Curves spread the load",
+      "body": "Rounded edges reduce severe stress concentrations.",
+      "accent": "safe",
+      "visual": { "kind": "stress-map", "mode": "rounded" }
+    },
+    {
+      "id": "SC7",
+      "type": "conclusion",
+      "headline": "A hard-earned design lesson",
+      "body": "Modern windows carry the lesson of early pressurized jets.",
+      "accent": "electric",
+      "visual": { "kind": "shape-comparison" }
+    }
+  ],
+  "disclosure": {
+    "realisticSyntheticMedia": false,
+    "reason": "Original stylized engineering diagrams and synthetic narration; no realistic event or accident is depicted."
+  },
+  "publishing": {
+    "title": "Why Are Airplane Windows Rounded?",
+    "summary": "Rounded airplane windows help the pressurized fuselage spread structural stress around each opening instead of concentrating it at sharp corners.",
+    "keywords": ["aviation", "airplanes", "engineering", "windows", "explained", "curiosity"]
+  },
+  "rights": [
+    {
+      "category": "visuals",
+      "asset": "Animated diagrams and thumbnail",
+      "origin": "Generated locally by src/visuals/render-frame.ts",
+      "license": "Original project output",
+      "evidence": "Repository source and episode manifest"
+    },
+    {
+      "category": "narration",
+      "asset": "Narration",
+      "origin": "macOS built-in Samantha system voice via /usr/bin/say",
+      "license": "Generated locally on the operator's Mac",
+      "evidence": "src/narration/macos-say.ts and render receipt"
+    },
+    {
+      "category": "typography",
+      "asset": "Typography",
+      "origin": "Arial system font",
+      "license": "System-provided font rendered into video frames",
+      "evidence": "src/visuals/render-frame.ts"
+    }
+  ]
+}

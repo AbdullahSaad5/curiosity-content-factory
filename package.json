@@ -1,0 +1,30 @@
+{
+  "name": "curiosity-content-factory",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "factory:verify": "npm test && npm run typecheck && npm run episode:validate -- episodes/E0001-birds-on-power-lines/episode.json && npm run episode:validate -- episodes/E0002-rounded-airplane-windows/episode.json",
+    "episode:new": "node --import tsx src/cli.ts new",
+    "episode:validate": "node --import tsx src/cli.ts validate",
+    "episode:render": "node --import tsx src/cli.ts render",
+    "episode:qa": "node --import tsx src/cli.ts qa",
+    "episode:release": "node --import tsx src/cli.ts release"
+  },
+  "dependencies": {
+    "sharp": "0.35.3",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.0",
+    "tsx": "4.23.5",
+    "typescript": "6.0.3",
+    "vitest": "4.1.10"
+  }
+}

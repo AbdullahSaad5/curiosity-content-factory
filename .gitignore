@@ -1,0 +1,10 @@
+node_modules/
+output/
+episodes/*/work/
+episodes/*/assets/generated/
+episodes/*/release/
+*.aiff
+*.wav
+*.mp4
+*.png
+.DS_Store

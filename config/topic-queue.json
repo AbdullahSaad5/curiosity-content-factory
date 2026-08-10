@@ -1,0 +1,59 @@
+{
+  "updatedAt": "2026-08-10",
+  "selectionRules": {
+    "audience": "General English-speaking US/UK viewers",
+    "targetDurationSeconds": [35, 60],
+    "minimumCredibleSources": 2,
+    "excluded": [
+      "medical treatment",
+      "personal finance",
+      "legal advice",
+      "politics and elections",
+      "breaking news",
+      "graphic harm",
+      "celebrity rumors"
+    ]
+  },
+  "topics": [
+    {
+      "question": "Why does popcorn pop?",
+      "status": "candidate",
+      "visualOpportunity": "kernel cross-section, pressure build-up, shell rupture"
+    },
+    {
+      "question": "Why do onions make you cry?",
+      "status": "candidate",
+      "visualOpportunity": "cut cells, airborne irritant, tear response"
+    },
+    {
+      "question": "Why does a shower curtain move inward?",
+      "status": "candidate",
+      "visualOpportunity": "airflow and pressure comparison"
+    },
+    {
+      "question": "How does a touchscreen know where your finger is?",
+      "status": "candidate",
+      "visualOpportunity": "electric field grid and changed capacitance"
+    },
+    {
+      "question": "Why do bridges have expansion joints?",
+      "status": "candidate",
+      "visualOpportunity": "thermal expansion and constrained versus free movement"
+    },
+    {
+      "question": "Why does salt melt ice?",
+      "status": "candidate",
+      "visualOpportunity": "freezing-point comparison and particle diagram"
+    },
+    {
+      "question": "Why do old books smell?",
+      "status": "candidate",
+      "visualOpportunity": "paper molecules breaking down into airborne compounds"
+    },
+    {
+      "question": "Why does a soda fizz when opened?",
+      "status": "candidate",
+      "visualOpportunity": "pressure drop and dissolved gas bubbles"
+    }
+  ]
+}

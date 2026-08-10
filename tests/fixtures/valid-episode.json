@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "id": "E0001",
+  "slug": "birds-on-power-lines",
+  "question": "Why don't birds get electrocuted on power lines?",
+  "status": "researched",
+  "claims": [
+    {
+      "id": "C1",
+      "text": "Current through a body requires an electrical potential difference across it.",
+      "sourceIds": ["S1"]
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "title": "Electric potential difference",
+      "url": "https://example.edu/electricity",
+      "publisher": "Example University",
+      "accessedAt": "2026-08-10"
+    },
+    {
+      "id": "S2",
+      "title": "Independent source",
+      "url": "https://example.gov/electricity",
+      "publisher": "Example Agency",
+      "accessedAt": "2026-08-10"
+    }
+  ],
+  "script": {
+    "short": "Birds are not immune to electricity.",
+    "segments": [
+      {
+        "id": "SEG1",
+        "sceneId": "SC1",
+        "claimIds": ["C1"],
+        "text": "Birds are not immune to electricity."
+      }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "SC1",
+      "type": "title",
+      "headline": "Why is this bird safe?",
+      "body": "The answer is the path electricity can take.",
+      "accent": "electric"
+    }
+  ],
+  "disclosure": {
+    "realisticSyntheticMedia": false,
+    "reason": "Stylized diagrams only"
+  },
+  "rights": [
+    {
+      "category": "visuals",
+      "asset": "Test visual",
+      "origin": "Generated fixture",
+      "license": "Original test output",
+      "evidence": "This fixture"
+    },
+    {
+      "category": "narration",
+      "asset": "Test narration",
+      "origin": "Generated fixture",
+      "license": "Original test output",
+      "evidence": "This fixture"
+    },
+    {
+      "category": "typography",
+      "asset": "Test typography",
+      "origin": "Generated fixture",
+      "license": "Original test output",
+      "evidence": "This fixture"
+    }
+  ]
+}
