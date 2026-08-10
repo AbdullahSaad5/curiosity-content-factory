@@ -16,6 +16,7 @@
     "episode:render": "node --import tsx src/cli.ts render",
     "episode:qa": "node --import tsx src/cli.ts qa",
     "episode:release": "node --import tsx src/cli.ts release",
+    "pipeline": "node --import tsx src/cinematic/render-prototype.ts",
     "prototype:render": "node --import tsx src/cinematic/render-prototype.ts"
   },
   "dependencies": {

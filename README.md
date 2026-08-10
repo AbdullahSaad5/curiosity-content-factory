@@ -45,10 +45,10 @@ npm run episode:validate -- episodes/E0001-birds-on-power-lines/episode.json
 npm run episode:validate -- E0001 --format vertical
 ```
 
-Render the current approval prototype:
+Render the current approval prototype through the pipeline:
 
 ```bash
-npm run prototype:render -- prototypes/airplane-window-v2/manifest.json
+npm run pipeline -- prototypes/airplane-window-v2/manifest.json
 ```
 
 The command writes this package under `output/prototypes/airplane-window-v2/`:
@@ -91,4 +91,4 @@ The draft will not validate until its research, claims, script, scenes, rights, 
 - Upload as private/draft first and require an explicit human aesthetic approval before public release.
 - Monetization is not guaranteed. Eligibility, distribution, RPM, and payout remain platform decisions.
 
-Read [the editorial policy](docs/EDITORIAL_POLICY.md), [publishing runbook](docs/PUBLISHING_RUNBOOK.md), and [manual run prompt](docs/MANUAL_RUN_PROMPT.md) before operating the channel.
+Read [the pipeline runbook](docs/RUN_PIPELINE.md), [editorial policy](docs/EDITORIAL_POLICY.md), [publishing runbook](docs/PUBLISHING_RUNBOOK.md), and [manual run prompt](docs/MANUAL_RUN_PROMPT.md) before operating the channel.
