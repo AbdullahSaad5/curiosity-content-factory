@@ -17,11 +17,36 @@ The factory stops at a staged release because only the account owner can complet
 2. Complete monetization eligibility and payout onboarding when offered.
 3. Confirm Page access. Meta documents that Facebook or task access can manage content and monetization workflows in Business Suite: [Page access](https://www.facebook.com/help/289207354498410/).
 
+## Automated private/draft staging
+
+The renderer never uploads. After watching the entire video and inspecting the contact sheet, record a named approval:
+
+```bash
+npm run release:approve -- output/prototypes/airplane-window-v2 "Your Name"
+```
+
+For YouTube, export an OAuth access token authorized for `youtube.upload`, then run:
+
+```bash
+export YOUTUBE_ACCESS_TOKEN="..."
+npm run publish:youtube-draft -- output/prototypes/airplane-window-v2 --confirm-upload
+```
+
+For a Facebook Page, export its ID and Page access token, then run:
+
+```bash
+export FB_PAGE_ID="..."
+export FB_PAGE_ACCESS_TOKEN="..."
+npm run publish:facebook-draft -- output/prototypes/airplane-window-v2 --confirm-upload
+```
+
+You may set `FB_GRAPH_VERSION` when Meta advances the app's supported Graph version. The default is `v25.0`. Both adapters require the approval file and literal `--confirm-upload`. YouTube is forced to `private`; Facebook is forced to `DRAFT`. The code has no public/published mode and creates no cron job. Access tokens must never be committed.
+
 ## Release procedure
 
 1. Open `output/E####/publishing-checklist.md` and complete every item.
 2. Use `youtube-short/metadata.json` or `facebook-reel/metadata.json` as copy-ready metadata; do not invent a more sensational title during upload.
-3. Upload the video, captions, and thumbnail from the matching platform folder.
+3. Either run the private/draft adapter above or upload the video, captions, and thumbnail from the matching platform folder.
 4. Keep the upload private or a draft while platform copyright/ad-suitability processing finishes.
 5. Verify that the processed video is sharp, the audio plays, captions align, and no unexpected claim or restriction appeared.
 6. Schedule only after those checks pass.

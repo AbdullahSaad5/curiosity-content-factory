@@ -1,6 +1,8 @@
 {
   "id": "airplane-window-v2",
   "title": "Why Airplane Windows Are Rounded",
+  "description": "Square airplane windows once concentrated pressure stress at their corners. Here is why curves changed that.",
+  "tags": ["aviation", "engineering", "curiosity", "science shorts"],
   "voice": "bm_george",
   "speed": 0.94,
   "scenes": [

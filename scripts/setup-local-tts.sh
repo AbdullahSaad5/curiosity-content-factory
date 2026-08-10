@@ -12,7 +12,10 @@ if ! command -v "$tts_python_bin" >/dev/null 2>&1; then
 fi
 
 "$tts_python_bin" -m venv "$venv_dir"
-"$venv_dir/bin/python" -m pip install kokoro-onnx==0.5.0 soundfile==0.13.1
+"$venv_dir/bin/python" -m pip install \
+  kokoro-onnx==0.5.0 \
+  openai-whisper==20250625 \
+  soundfile==0.13.1
 
 mkdir -p "$model_dir"
 curl --fail --location --show-error \

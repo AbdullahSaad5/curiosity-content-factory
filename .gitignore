@@ -1,6 +1,7 @@
 node_modules/
 .venv*/
 models/kokoro/
+models/whisper/
 output/
 episodes/*/work/
 episodes/*/assets/generated/

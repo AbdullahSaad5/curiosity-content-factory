@@ -2,12 +2,12 @@
 
 A zero-incremental-cost, manifest-driven factory for original English explainer videos. The current production direction is cinematic AI-generated imagery, restrained 30 fps camera movement, short burned-in captions, and private on-device neural narration.
 
-The factory uses Node.js, Sharp, FFmpeg, and the open-weight Kokoro voice model. Image assets are generated through the existing ChatGPT/Codex subscription. It does not call a paid API, use stock footage, create a cron job, or publish without account authorization and review.
+The factory uses Node.js, Sharp, FFmpeg, Kokoro voice synthesis, and local Whisper timing. Image assets are generated through the existing ChatGPT/Codex subscription. It does not call a paid generation API, use stock footage, create a cron job, or publish without account authorization and review.
 
 ## What is already built
 
 - A 19.9-second cinematic approval prototype for “Why Are Airplane Windows Rounded?”
-- Four original vertical scene images, slow Ken Burns movement, 3-word caption groups, and local Kokoro narration.
+- Four original vertical scene images, slow Ken Burns movement, Whisper-aligned 3-word caption groups, and local Kokoro narration.
 - 1080×1920 H.264/AAC at 30 fps with 48 kHz stereo audio mastered to about −14 LUFS.
 - Aesthetic approval, contact-sheet inspection, legacy-voice blocking, and technical tests.
 
@@ -20,7 +20,7 @@ Generated video and audio files remain local and are intentionally ignored by Gi
 - macOS on Apple Silicon
 - Node.js 22 or newer
 - FFmpeg and ffprobe
-- Python 3.12, `kokoro-onnx`, and the Kokoro v1.0 INT8 model
+- Python 3.12, `kokoro-onnx`, `openai-whisper`, and their local models
 
 No API key is required. Narration text remains on the machine.
 
@@ -55,12 +55,25 @@ The command writes this package under `output/prototypes/airplane-window-v2/`:
 
 - `prototype.mp4` — 1080×1920 H.264/AAC approval cut
 - `narration-mastered.wav` — local neural narration at release loudness
-- `captions.ass` — timed three-word caption groups
+- `words.json` — local Whisper word timestamps
+- `aligned-timeline.json` — scene cuts aligned to spoken words
+- `captions.ass` — word-aligned three-word caption groups
 - `thumbnail.jpg` — clean opening frame
 - `contact-sheet.jpg` — one representative frame per scene
+- `publish-metadata.json` — title, description, and tags for draft upload
 - `quality-gate.json` — renderer, voice, caption, and approval status
 
-The Kokoro model and generated media are local and ignored by Git. The one-time setup downloads about 120 MB of open model files; it does not transmit episode text. See [the model record](docs/THIRD_PARTY_MODELS.md). The approval prototype is not a release and is not uploaded anywhere.
+Kokoro, Whisper, and generated media are local and ignored by Git. The one-time setup downloads Kokoro; the first render downloads the selected Whisper model. Neither runtime transmits episode text or narration. See [the model record](docs/THIRD_PARTY_MODELS.md). The approval prototype is not uploaded anywhere.
+
+After watching a render, a named human can approve it and explicitly upload it as private/draft. These commands are deliberately separate from rendering:
+
+```bash
+npm run release:approve -- output/prototypes/airplane-window-v2 "Your Name"
+npm run publish:youtube-draft -- output/prototypes/airplane-window-v2 --confirm-upload
+npm run publish:facebook-draft -- output/prototypes/airplane-window-v2 --confirm-upload
+```
+
+The upload commands require platform access-token environment variables. They never select public/published status; final publication stays in YouTube Studio or Meta Business Suite. See [the publishing runbook](docs/PUBLISHING_RUNBOOK.md).
 
 ## Add an episode
 

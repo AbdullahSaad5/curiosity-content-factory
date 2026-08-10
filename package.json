@@ -17,7 +17,10 @@
     "episode:qa": "node --import tsx src/cli.ts qa",
     "episode:release": "node --import tsx src/cli.ts release",
     "pipeline": "node --import tsx src/cinematic/render-prototype.ts",
-    "prototype:render": "node --import tsx src/cinematic/render-prototype.ts"
+    "prototype:render": "node --import tsx src/cinematic/render-prototype.ts",
+    "release:approve": "node --import tsx src/publish/cli.ts approve",
+    "publish:youtube-draft": "node --import tsx src/publish/cli.ts youtube-draft",
+    "publish:facebook-draft": "node --import tsx src/publish/cli.ts facebook-draft"
   },
   "dependencies": {
     "sharp": "0.35.3",

@@ -14,3 +14,13 @@
 - Storage: model binaries and generated audio are ignored by Git and remain local.
 
 The voice is a stock model voice. Do not use it to imitate or imply endorsement by a real person.
+
+## OpenAI Whisper
+
+- Purpose: on-device word timestamps for caption and scene alignment.
+- Runtime: `openai-whisper` 20250625.
+- Default model: `base.en`; override locally with `WHISPER_MODEL`.
+- Source: https://github.com/openai/whisper
+- Code and model license: MIT.
+- Privacy: transcription runs on-device after model download; audio is not sent to a speech API.
+- Storage: model binaries and transcript artifacts are ignored by Git or stay in the selected output directory.

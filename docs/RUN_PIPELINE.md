@@ -7,7 +7,7 @@ npm install
 bash scripts/setup-local-tts.sh
 ```
 
-The TTS setup downloads approximately 120 MB of open model files. The models, virtual environment, and generated media remain local and are ignored by Git.
+The setup downloads approximately 120 MB of Kokoro model files. The first render also downloads the local Whisper model (`base.en` by default). Models, the virtual environment, and generated media remain local and are ignored by Git.
 
 ## Render the included approval cut
 
@@ -25,10 +25,10 @@ npm run pipeline -- prototypes/airplane-window-v2/manifest.json output/my-test
 
 1. Validates the cinematic manifest and every referenced image.
 2. Generates the narration locally with Kokoro.
-3. Measures the real duration of each narration beat.
-4. Renders each image with restrained 30 fps camera movement.
-5. Creates three-word timed captions.
-6. Compresses and normalizes narration to approximately -14 LUFS.
+3. Transcribes the generated narration locally with Whisper word timestamps.
+4. Aligns scene cuts and three-word captions to the spoken words.
+5. Renders each image with restrained 30 fps camera movement.
+6. Compresses and normalizes narration to approximately -14 LUFS; if configured, it loops a rights-recorded music bed underneath.
 7. Encodes a 1080x1920 H.264/AAC MP4.
 8. Produces a thumbnail, scene-aware contact sheet, and quality gate.
 
@@ -46,6 +46,9 @@ output/prototypes/airplane-window-v2/
   thumbnail.jpg
   contact-sheet.jpg
   timeline.json
+  words.json
+  aligned-timeline.json
+  publish-metadata.json
   quality-gate.json
 ```
 
@@ -59,3 +62,17 @@ output/prototypes/airplane-window-v2/
 6. Watch the entire MP4 with sound and inspect the contact sheet before approving a full episode.
 
 For a 45-60 second Short, target 14-18 images and change the visual every 2-4 seconds.
+
+## Optional music bed
+
+Add this object to the manifest only for music you own or are licensed to use:
+
+```json
+"music": {
+  "file": "assets/original-bed.wav",
+  "license": "Original composition owned by this channel",
+  "volume": 0.1
+}
+```
+
+Volume is capped at `0.25`. A music path without a rights record is rejected.

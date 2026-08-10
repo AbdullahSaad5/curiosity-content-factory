@@ -5,6 +5,12 @@ import sharp from "sharp";
 import { z } from "zod";
 
 import { run } from "../lib/process";
+import { masterSoundtrack } from "./audio";
+import {
+  alignScenesToWords,
+  captionCuesFromWords,
+  type TimedWord,
+} from "./timing";
 
 const sceneSchema = z.object({
   image: z.string().min(1),
@@ -14,8 +20,15 @@ const sceneSchema = z.object({
 const manifestSchema = z.object({
   id: z.string().min(1),
   title: z.string().min(1),
+  description: z.string().min(1).default("An original visual explainer."),
+  tags: z.array(z.string().min(1)).max(30).default([]),
   voice: z.string().min(1),
   speed: z.number().min(0.5).max(2),
+  music: z.object({
+    file: z.string().min(1),
+    license: z.string().min(1),
+    volume: z.number().min(0).max(0.25).default(0.1),
+  }).optional(),
   scenes: z.array(sceneSchema).min(2),
 });
 
@@ -33,6 +46,19 @@ const timelineSchema = z.object({
       endSeconds: z.number().positive(),
     }),
   ),
+});
+
+const transcriptSchema = z.object({
+  provider: z.literal("openai-whisper-local"),
+  model: z.string().min(1),
+  text: z.string(),
+  words: z.array(
+    z.object({
+      word: z.string().min(1),
+      startSeconds: z.number().nonnegative(),
+      endSeconds: z.number().positive(),
+    }),
+  ).min(1),
 });
 
 type CaptionCue = {
@@ -171,13 +197,19 @@ export async function renderCinematicPrototype(
   const images = manifest.scenes.map((scene) =>
     resolve(dirname(absoluteManifest), scene.image),
   );
-  await Promise.all(images.map((path) => access(path)));
+  const musicPath = manifest.music
+    ? resolve(dirname(absoluteManifest), manifest.music.file)
+    : undefined;
+  await Promise.all([...images, ...(musicPath ? [musicPath] : [])].map((path) => access(path)));
 
   const python = join(projectRoot, ".venv-local-tts", "bin", "python");
   const ttsScript = join(projectRoot, "scripts", "kokoro_tts.py");
+  const whisperScript = join(projectRoot, "scripts", "whisper_words.py");
   const model = join(projectRoot, "models", "kokoro", "kokoro-v1.0.int8.onnx");
   const voices = join(projectRoot, "models", "kokoro", "voices-v1.0.bin");
-  await Promise.all([python, ttsScript, model, voices].map((path) => access(path)));
+  await Promise.all(
+    [python, ttsScript, whisperScript, model, voices].map((path) => access(path)),
+  );
 
   await run(python, [
     ttsScript,
@@ -198,13 +230,45 @@ export async function renderCinematicPrototype(
     throw new Error("Narration timeline does not match the visual scene count");
   }
 
+  const rawNarration = join(outputDir, "narration-raw.wav");
+  const wordsPath = join(outputDir, "words.json");
+  const whisperModel = process.env.WHISPER_MODEL ?? "base.en";
+  await run(python, [
+    whisperScript,
+    "--audio",
+    rawNarration,
+    "--output",
+    wordsPath,
+    "--model",
+    whisperModel,
+    "--model-dir",
+    join(projectRoot, "models", "whisper"),
+  ]);
+  const transcript = transcriptSchema.parse(
+    JSON.parse(await readFile(wordsPath, "utf8")) as unknown,
+  );
+  const timedWords: TimedWord[] = transcript.words;
+  const sceneTimings = alignScenesToWords(
+    manifest.scenes,
+    timedWords,
+    timeline.durationSeconds,
+  );
+  await writeFile(
+    join(outputDir, "aligned-timeline.json"),
+    `${JSON.stringify({ scenes: sceneTimings }, null, 2)}\n`,
+    "utf8",
+  );
+
   const clipPaths: string[] = [];
   for (let index = 0; index < manifest.scenes.length; index += 1) {
-    const current = timeline.scenes[index]!;
-    const next = timeline.scenes[index + 1];
-    const end = next?.startSeconds ?? timeline.durationSeconds;
+    const timing = sceneTimings[index]!;
     const clipPath = join(clipsDir, `scene-${String(index + 1).padStart(2, "0")}.mp4`);
-    await renderSceneClip(images[index]!, end - current.startSeconds, index, clipPath);
+    await renderSceneClip(
+      images[index]!,
+      timing.endSeconds - timing.startSeconds,
+      index,
+      clipPath,
+    );
     clipPaths.push(clipPath);
   }
 
@@ -215,34 +279,32 @@ export async function renderCinematicPrototype(
     "utf8",
   );
 
-  const cues = timeline.scenes.flatMap((scene) =>
-    captionCues(
-      scene.narration,
-      scene.startSeconds,
-      scene.endSeconds,
+  const cues = sceneTimings.flatMap((timing) =>
+    captionCuesFromWords(
+      timedWords.filter(
+        (word) =>
+          word.startSeconds >= timing.startSeconds &&
+          word.startSeconds < timing.endSeconds,
+      ),
       3,
     ),
   );
   const captionsPath = join(outputDir, "captions.ass");
   await writeFile(captionsPath, buildAss(cues), "utf8");
 
-  const rawNarration = join(outputDir, "narration-raw.wav");
   const narrationPath = join(outputDir, "narration-mastered.wav");
-  await run("ffmpeg", [
-    "-hide_banner",
-    "-loglevel",
-    "error",
-    "-y",
-    "-i",
-    rawNarration,
-    "-af",
-    "highpass=f=75,acompressor=threshold=-20dB:ratio=3:attack=8:release=180,loudnorm=I=-14:TP=-1.5:LRA=11,aformat=channel_layouts=stereo",
-    "-ar",
-    "48000",
-    "-c:a",
-    "pcm_s24le",
-    narrationPath,
-  ]);
+  await masterSoundtrack({
+    voicePath: rawNarration,
+    outputPath: narrationPath,
+    durationSeconds: timeline.durationSeconds,
+    ...(musicPath && manifest.music
+      ? {
+          musicPath,
+          musicLicense: manifest.music.license,
+          musicVolume: manifest.music.volume,
+        }
+      : {}),
+  });
 
   const videoPath = join(outputDir, "prototype.mp4");
   await run(
@@ -294,16 +356,16 @@ export async function renderCinematicPrototype(
     .toFile(join(outputDir, "thumbnail.jpg"));
 
   const contactSheetPath = join(outputDir, "contact-sheet.jpg");
-  const contactInputs = timeline.scenes.flatMap((scene) => [
+  const contactInputs = sceneTimings.flatMap((scene) => [
     "-ss",
     ((scene.startSeconds + scene.endSeconds) / 2).toFixed(3),
     "-i",
     videoPath,
   ]);
-  const contactTiles = timeline.scenes
+  const contactTiles = sceneTimings
     .map((_, index) => `[${index}:v]scale=270:480[t${index}]`)
     .join(";");
-  const contactStack = timeline.scenes
+  const contactStack = sceneTimings
     .map((_, index) => `[t${index}]`)
     .join("");
   await run("ffmpeg", [
@@ -313,13 +375,23 @@ export async function renderCinematicPrototype(
     "-y",
     ...contactInputs,
     "-filter_complex",
-    `${contactTiles};${contactStack}hstack=inputs=${timeline.scenes.length}[sheet]`,
+    `${contactTiles};${contactStack}hstack=inputs=${sceneTimings.length}[sheet]`,
     "-map",
     "[sheet]",
     "-frames:v",
     "1",
     contactSheetPath,
   ]);
+
+  await writeFile(
+    join(outputDir, "publish-metadata.json"),
+    `${JSON.stringify({
+      title: manifest.title,
+      description: manifest.description,
+      tags: manifest.tags,
+    }, null, 2)}\n`,
+    "utf8",
+  );
 
   await writeFile(
     join(outputDir, "quality-gate.json"),
@@ -329,11 +401,21 @@ export async function renderCinematicPrototype(
         renderer: "cinematic-image-v2",
         narrationProvider: timeline.provider,
         narrationVoice: timeline.voice,
+        captionTimingProvider: transcript.provider,
+        captionTimingModel: transcript.model,
+        sceneTiming: "whisper-word-aligned",
         fps: 30,
         imageCount: images.length,
         maximumCaptionWords: Math.max(
           ...cues.map((cue) => cue.text.split(/\s+/u).length),
         ),
+        musicBed: manifest.music
+          ? {
+              included: true,
+              volume: manifest.music.volume,
+              rights: manifest.music.license,
+            }
+          : { included: false },
         legacySystemVoiceBlocked: true,
         aestheticApprovalRequired: true,
         approved: false,
